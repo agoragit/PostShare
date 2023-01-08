@@ -1,4 +1,4 @@
-package ago.app.profile.es;
+package ago.app.post.es;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;

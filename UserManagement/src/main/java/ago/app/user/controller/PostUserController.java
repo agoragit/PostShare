@@ -6,8 +6,11 @@ import ago.app.user.base.vo.PostUserQueryVO;
 import ago.app.user.base.vo.PostUserUpdateVO;
 import ago.app.user.base.vo.PostUserVO;
 import ago.app.user.es.ElasticSearchQuery;
+import error.ErrorConstant;
+import error.ErrorResponse;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,15 +31,24 @@ public class PostUserController {
 
     @SneakyThrows
     @PostMapping
-    public String save(@Valid @RequestBody PostUserVO vO) {
-        long userId = postUserService.save(vO);
-        if (userId > 0 )
+    public ErrorResponse save(@Valid @RequestBody PostUserVO vO) {
+        try
         {
-            vO.setUserId(userId);
-            elasticSearchQuery.createOrUpdateDocument(vO, userId);
+            long userId = postUserService.save(vO);
+            if ( userId > 0 )
+            {
+                vO.setUserId(userId);
+                return elasticSearchQuery.createOrUpdateDocument(vO, userId);
+            }
+            else
+            {
+                return new ErrorResponse(ErrorConstant.ERROR, "error"); // todo validate here
+            }
         }
-        return userId+"";
-
+        catch (DataIntegrityViolationException e)
+        {
+            return new ErrorResponse(ErrorConstant.ERROR, e.getCause().getCause().getMessage() ); // todo validate here
+        }
     }
 
     @SneakyThrows
@@ -46,12 +58,19 @@ public class PostUserController {
         elasticSearchQuery.deleteDocumentById( id+"");
     }
 
-    @SneakyThrows
     @PutMapping("/{id}")
-    public void update(@Valid @NotNull @PathVariable("id") Long id,
+    public ErrorResponse update(@Valid @NotNull @PathVariable("id") Long id,
                        @Valid @RequestBody PostUserUpdateVO vO) {
-        postUserService.update(id, vO);
-        elasticSearchQuery.createOrUpdateDocument(vO, id);
+
+        try
+        {
+            postUserService.update(id, vO);
+            return elasticSearchQuery.createOrUpdateDocument(vO, id);
+        }
+        catch (Exception e)
+        {
+            return new ErrorResponse(ErrorConstant.ERROR, e.getMessage() ); // todo validate here
+        }
     }
 
     @GetMapping("/{id}")

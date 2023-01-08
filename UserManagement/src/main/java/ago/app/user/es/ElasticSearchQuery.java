@@ -2,8 +2,11 @@ package ago.app.user.es;
 
 import ago.app.user.base.vo.PostUserVO;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import error.ErrorConstant;
+import error.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +24,7 @@ public class ElasticSearchQuery {
     private final String indexName = "post_user";
 
 
-    public String createOrUpdateDocument(PostUserVO postUserVO, long userId) throws IOException {
+    public ErrorResponse createOrUpdateDocument(PostUserVO postUserVO, long userId) throws IOException {
 
         IndexResponse response = elasticsearchClient.index(i -> i
                 .index(indexName)
@@ -29,11 +32,11 @@ public class ElasticSearchQuery {
                 .document(postUserVO)
         );
         if (response.result().name().equals("Created")) {
-            return new StringBuilder("Document has been successfully created.").toString();
+            return new ErrorResponse(ErrorConstant.SUCCESS, "Created", response.id() );
         } else if (response.result().name().equals("Updated")) {
-            return new StringBuilder("Document has been successfully updated.").toString();
+            return new ErrorResponse(ErrorConstant.SUCCESS, "Updated", response.id() );
         }
-        return new StringBuilder("Error while performing the operation.").toString();
+        return  new ErrorResponse<Result>( ErrorConstant.ERROR, "Error" );
     }
 
     public PostUserVO getDocumentById(long userId) throws IOException {

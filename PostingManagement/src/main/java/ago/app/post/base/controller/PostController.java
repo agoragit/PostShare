@@ -1,8 +1,7 @@
-package ago.app.profile.base.controller;
+package ago.app.post.base.controller;
 
-import ago.app.profile.base.vo.PostProfileUpdateVO;
-import ago.app.profile.base.vo.PostProfileVO;
-import ago.app.profile.es.ElasticSearchQuery;
+import ago.app.post.base.vo.PostVO;
+import ago.app.post.es.ElasticSearchQuery;
 import cont.SavableConst;
 import error.ErrorConstant;
 import error.ErrorResponse;
@@ -18,24 +17,24 @@ import java.io.IOException;
 
 @Validated
 @RestController
-@RequestMapping("/postProfile")
-public class PostProfileController {
+@RequestMapping("/post")
+public class PostController {
 
     @Autowired
     private ElasticSearchQuery elasticSearchQuery;
 
     @SneakyThrows
     @PostMapping
-    public ErrorResponse save(@Valid @RequestBody PostProfileVO vO) {
+    public ErrorResponse save(@Valid @RequestBody PostVO vO) {
 
         // todo validate here
-        if( StringUtils.isNotNull(vO.getProfileId()) )
+        if( StringUtils.isNotNull(vO.getPostId()) )
         {
-            return new ErrorResponse(ErrorConstant.ERROR, "Invalid Profile Data");
+            return new ErrorResponse(ErrorConstant.ERROR, "Invalid post Data");
         }
         try
         {
-             return elasticSearchQuery.createOrUpdateDocument(vO, SavableConst.NEW );
+            return elasticSearchQuery.createOrUpdateDocument(vO, SavableConst.NEW );
         }
         catch (Exception e)
         {
@@ -51,15 +50,15 @@ public class PostProfileController {
 
     @PutMapping("/{id}")
     public ErrorResponse update(@Valid @NotNull @PathVariable("id") String id,
-                       @Valid @RequestBody PostProfileUpdateVO vO) throws IOException {
+                                @Valid @RequestBody PostVO vO) throws IOException {
         // todo validate here
         if( StringUtils.isNull( vO.getProfileId()) || StringUtils.isNull( id ))
         {
-            return new ErrorResponse(ErrorConstant.ERROR, "Invalid profile");
+            return new ErrorResponse(ErrorConstant.ERROR, "Invalid post");
         }
-        else if ( !id.equalsIgnoreCase(vO.getProfileId() ))
+        else if ( !id.equalsIgnoreCase(vO.getPostId() ))
         {
-            return new ErrorResponse(ErrorConstant.ERROR, "profile mismatched");
+            return new ErrorResponse(ErrorConstant.ERROR, "post mismatched");
         }
         try
         {
@@ -73,7 +72,8 @@ public class PostProfileController {
 
     @SneakyThrows
     @GetMapping("/{id}")
-    public PostProfileVO getById(@Valid @NotNull @PathVariable("id") String id) {
+    public PostVO getById(@Valid @NotNull @PathVariable("id") String id) {
         return elasticSearchQuery.getDocumentById(id);
     }
+
 }

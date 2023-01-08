@@ -1,4 +1,4 @@
-package ago.app.profile;
+package ago.app.post;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-public class ProfilemanagementApplication {
+public class PostingApplication {
 
 	public static void main(String[] args) {
 		System.out.println("Run start");
-		SpringApplication.run(ProfilemanagementApplication.class, args);
+		SpringApplication.run(PostingApplication.class, args);
 		System.out.println("Running success");
 	}
 	@RequestMapping("/a")

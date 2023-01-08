@@ -1,6 +1,6 @@
-package ago.app.profile.es;
+package ago.app.post.es;
 
-import ago.app.profile.base.vo.PostProfileVO;
+import ago.app.post.base.vo.PostVO;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.*;
@@ -22,22 +22,22 @@ public class ElasticSearchQuery {
     @Autowired
     private ElasticsearchClient elasticsearchClient;
 
-    private final String indexName = "post_profile";
+    private final String indexName = "post";
 
 
-    public ErrorResponse createOrUpdateDocument(PostProfileVO postProfileVO, int savableStatus ) throws IOException {
+    public ErrorResponse createOrUpdateDocument(PostVO postVO, int savableStatus ) throws IOException {
 
         IndexResponse response = null;
         if(SavableConst.NEW == savableStatus )
         {
             response = elasticsearchClient.index(i -> i.index(indexName)
-                                .document(postProfileVO)
+                                .document(postVO)
               );
         }
         else if ( SavableConst.MODIFY == savableStatus)
         {
-            response = elasticsearchClient.index(i -> i.index(indexName).id( postProfileVO.getProfileId() )
-                    .document(postProfileVO)
+            response = elasticsearchClient.index(i -> i.index(indexName).id( postVO.getPostId() )
+                    .document(postVO)
             );
         }
         if( response != null )
@@ -52,12 +52,12 @@ public class ElasticSearchQuery {
         return  new ErrorResponse<Result>( ErrorConstant.ERROR, "Error" );
     }
 
-    public PostProfileVO getDocumentById(String id) throws IOException {
-        PostProfileVO product = null;
-        GetResponse<PostProfileVO> response = elasticsearchClient.get(g -> g
+    public PostVO getDocumentById(String id) throws IOException {
+        PostVO product = null;
+        GetResponse<PostVO> response = elasticsearchClient.get(g -> g
                         .index(indexName)
                         .id(id),
-                PostProfileVO.class
+                PostVO.class
         );
 
         if (response.found()) {
@@ -81,14 +81,14 @@ public class ElasticSearchQuery {
 
     }
 
-    public List<PostProfileVO> searchAllDocuments() throws IOException {
+    public List<PostVO> searchAllDocuments() throws IOException {
 
         SearchRequest searchRequest = SearchRequest.of(s -> s.index(indexName));
-        SearchResponse searchResponse = elasticsearchClient.search(searchRequest, PostProfileVO.class);
+        SearchResponse searchResponse = elasticsearchClient.search(searchRequest, PostVO.class);
         List<Hit> hits = searchResponse.hits().hits();
-        List<PostProfileVO> products = new ArrayList<>();
+        List<PostVO> products = new ArrayList<>();
         for (Hit object : hits) {
-            PostProfileVO postProfileVO = (PostProfileVO) object.source();
+            PostVO postProfileVO = (PostVO) object.source();
             postProfileVO.setProfileId(object.id());
             products.add( postProfileVO );
 

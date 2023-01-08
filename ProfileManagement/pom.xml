@@ -11,17 +11,6 @@
     <packaging>war</packaging>
     <artifactId>ProfileManagement</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>co.elastic.clients</groupId>
-            <artifactId>elasticsearch-java</artifactId>
-            <version>7.17.4</version>
-        </dependency>
-        <dependency>
-            <groupId>ago.app</groupId>
-            <artifactId>CommonLib</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

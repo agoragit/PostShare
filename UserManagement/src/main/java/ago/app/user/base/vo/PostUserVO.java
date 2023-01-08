@@ -2,8 +2,8 @@ package ago.app.user.base.vo;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
 public class PostUserVO implements Serializable {
