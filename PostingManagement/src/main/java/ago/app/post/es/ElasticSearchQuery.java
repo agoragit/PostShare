@@ -1,10 +1,13 @@
 package ago.app.post.es;
 
+import ago.app.post.base.ReactionStat;
+import ago.app.post.base.dto.PostDTO;
 import ago.app.post.base.vo.PostVO;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import cont.EsStatIndexConst;
 import cont.SavableConst;
 import error.ErrorConstant;
 import error.ErrorResponse;
@@ -22,7 +25,8 @@ public class ElasticSearchQuery {
     @Autowired
     private ElasticsearchClient elasticsearchClient;
 
-    private final String indexName = "post";
+    private final String indexName = EsStatIndexConst.INDEX_post;
+    private final String reactionStatIndex = EsStatIndexConst.INDEX_post_reaction_stat;
 
 
     public ErrorResponse createOrUpdateDocument(PostVO postVO, int savableStatus ) throws IOException {
@@ -33,6 +37,10 @@ public class ElasticSearchQuery {
             response = elasticsearchClient.index(i -> i.index(indexName)
                                 .document(postVO)
               );
+            IndexResponse finalResponse = response;
+            elasticsearchClient.index(i -> i.index(reactionStatIndex).id( finalResponse.id() )
+                    .document(new ReactionStat())
+            );
         }
         else if ( SavableConst.MODIFY == savableStatus)
         {
@@ -52,17 +60,18 @@ public class ElasticSearchQuery {
         return  new ErrorResponse<Result>( ErrorConstant.ERROR, "Error" );
     }
 
-    public PostVO getDocumentById(String id) throws IOException {
-        PostVO product = null;
-        GetResponse<PostVO> response = elasticsearchClient.get(g -> g
+    public PostDTO getDocumentById(String id) throws IOException {
+        PostDTO product = null;
+        GetResponse<PostDTO> response = elasticsearchClient.get(g -> g
                         .index(indexName)
                         .id(id),
-                PostVO.class
+                PostDTO.class
         );
 
         if (response.found()) {
             product = response.source();
             product.setPostId(response.id());
+            product.setReactionStat(getReactionStatById(response.id()));
         }
 
         return product;
@@ -80,17 +89,32 @@ public class ElasticSearchQuery {
         return new StringBuilder("Product with id " + deleteResponse.id() + " does not exist.").toString();
 
     }
+    public ReactionStat getReactionStatById(String id) throws IOException {
+        ReactionStat product = null;
+        GetResponse<ReactionStat> response = elasticsearchClient.get(g -> g
+                        .index(reactionStatIndex)
+                        .id(id),
+                ReactionStat.class
+        );
 
-    public List<PostVO> searchAllDocuments() throws IOException {
+        if (response.found()) {
+            product = response.source();
+        }
+
+        return product;
+    }
+    public List<PostDTO> searchAllDocuments() throws IOException {
 
         SearchRequest searchRequest = SearchRequest.of(s -> s.index(indexName));
         SearchResponse searchResponse = elasticsearchClient.search(searchRequest, PostVO.class);
         List<Hit> hits = searchResponse.hits().hits();
-        List<PostVO> products = new ArrayList<>();
+        List<PostDTO> products = new ArrayList<>();
         for (Hit object : hits) {
-            PostVO postProfileVO = (PostVO) object.source();
-            postProfileVO.setPostId(object.id());
-            products.add( postProfileVO );
+            PostDTO postDTO = (PostDTO) object.source();
+            postDTO.setPostId(object.id());
+            postDTO.setReactionStat(getReactionStatById(object.id()));
+
+            products.add( postDTO );
 
         }
         return products;

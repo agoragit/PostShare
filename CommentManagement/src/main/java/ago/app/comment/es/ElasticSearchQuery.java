@@ -5,6 +5,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import cont.EsStatIndexConst;
 import cont.SavableConst;
 import error.ErrorConstant;
 import error.ErrorResponse;
@@ -22,7 +23,7 @@ public class ElasticSearchQuery {
     @Autowired
     private ElasticsearchClient elasticsearchClient;
 
-    private final String indexName = "post_comment";
+    private final String indexName = EsStatIndexConst.INDEX_post_comment;
 
 
     public ErrorResponse createOrUpdateDocument(PostCommentVO postCommentVO, int savableStatus ) throws IOException {

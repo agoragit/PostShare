@@ -9,14 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
-    <artifactId>PostingManagement</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>ago.app</groupId>
-            <artifactId>UserManagement</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+    <artifactId>ReplyCommentManagement</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

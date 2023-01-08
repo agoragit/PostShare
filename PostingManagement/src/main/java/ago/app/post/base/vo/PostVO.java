@@ -1,11 +1,12 @@
 package ago.app.post.base.vo;
 
+import ago.app.post.base.ReactionStat;
 import lombok.Data;
+import org.springframework.data.annotation.Transient;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 

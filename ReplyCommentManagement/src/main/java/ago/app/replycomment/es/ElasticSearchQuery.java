@@ -1,6 +1,7 @@
-package ago.app.profile.es;
+package ago.app.replycomment.es;
 
-import ago.app.profile.base.vo.PostProfileVO;
+import ago.app.replycomment.base.dto.PostCommentReplyDTO;
+import ago.app.replycomment.base.vo.PostCommentReplyVO;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.*;
@@ -23,22 +24,22 @@ public class ElasticSearchQuery {
     @Autowired
     private ElasticsearchClient elasticsearchClient;
 
-    private final String indexName = EsStatIndexConst.INDEX_post_profile;
+    private final String indexName = EsStatIndexConst.INDEX_post_reply_comment;
 
 
-    public ErrorResponse createOrUpdateDocument(PostProfileVO postProfileVO, int savableStatus ) throws IOException {
+    public ErrorResponse createOrUpdateDocument(PostCommentReplyVO postCommentReplyVO, int savableStatus ) throws IOException {
 
         IndexResponse response = null;
         if(SavableConst.NEW == savableStatus )
         {
             response = elasticsearchClient.index(i -> i.index(indexName)
-                                .document(postProfileVO)
+                                .document(postCommentReplyVO)
               );
         }
         else if ( SavableConst.MODIFY == savableStatus)
         {
-            response = elasticsearchClient.index(i -> i.index(indexName).id( postProfileVO.getProfileId() )
-                    .document(postProfileVO)
+            response = elasticsearchClient.index(i -> i.index(indexName).id( postCommentReplyVO.getReplyId())
+                    .document(postCommentReplyVO)
             );
         }
         if( response != null )
@@ -53,17 +54,17 @@ public class ElasticSearchQuery {
         return  new ErrorResponse<Result>( ErrorConstant.ERROR, "Error" );
     }
 
-    public PostProfileVO getDocumentById(String id) throws IOException {
-        PostProfileVO product = null;
-        GetResponse<PostProfileVO> response = elasticsearchClient.get(g -> g
+    public PostCommentReplyDTO getDocumentById(String id) throws IOException {
+        PostCommentReplyDTO product = null;
+        GetResponse<PostCommentReplyDTO> response = elasticsearchClient.get(g -> g
                         .index(indexName)
                         .id(id),
-                PostProfileVO.class
+                PostCommentReplyDTO.class
         );
 
         if (response.found()) {
             product = response.source();
-            product.setProfileId(response.id());
+            product.setReplyId(response.id());
         }
 
         return product;
@@ -82,16 +83,16 @@ public class ElasticSearchQuery {
 
     }
 
-    public List<PostProfileVO> searchAllDocuments() throws IOException {
+    public List<PostCommentReplyVO> searchAllDocuments() throws IOException {
 
         SearchRequest searchRequest = SearchRequest.of(s -> s.index(indexName));
-        SearchResponse searchResponse = elasticsearchClient.search(searchRequest, PostProfileVO.class);
+        SearchResponse searchResponse = elasticsearchClient.search(searchRequest, PostCommentReplyVO.class);
         List<Hit> hits = searchResponse.hits().hits();
-        List<PostProfileVO> products = new ArrayList<>();
+        List<PostCommentReplyVO> products = new ArrayList<>();
         for (Hit object : hits) {
-            PostProfileVO postProfileVO = (PostProfileVO) object.source();
-            postProfileVO.setProfileId(object.id());
-            products.add( postProfileVO );
+            PostCommentReplyVO postCommentReplyVO = (PostCommentReplyVO) object.source();
+            postCommentReplyVO.setReplyId(object.id());
+            products.add( postCommentReplyVO );
 
         }
         return products;

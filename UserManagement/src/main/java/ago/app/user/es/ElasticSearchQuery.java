@@ -5,6 +5,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import cont.EsStatIndexConst;
 import error.ErrorConstant;
 import error.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class ElasticSearchQuery {
     @Autowired
     private ElasticsearchClient elasticsearchClient;
 
-    private final String indexName = "post_user";
+    private final String indexName = EsStatIndexConst.INDEX_post_user;
 
 
     public ErrorResponse createOrUpdateDocument(PostUserVO postUserVO, long userId) throws IOException {

@@ -1,8 +1,8 @@
-package ago.app.post.base.controller;
+package ago.app.replycomment.base.controller;
 
-import ago.app.post.base.dto.PostDTO;
-import ago.app.post.base.vo.PostVO;
-import ago.app.post.es.ElasticSearchQuery;
+import ago.app.replycomment.base.dto.PostCommentReplyDTO;
+import ago.app.replycomment.base.vo.PostCommentReplyVO;
+import ago.app.replycomment.es.ElasticSearchQuery;
 import cont.SavableConst;
 import error.ErrorConstant;
 import error.ErrorResponse;
@@ -18,20 +18,20 @@ import java.io.IOException;
 
 @Validated
 @RestController
-@RequestMapping("/post")
-public class PostController {
+@RequestMapping("/postCommentReply")
+public class PostCommentReplyController {
 
     @Autowired
     private ElasticSearchQuery elasticSearchQuery;
 
     @SneakyThrows
     @PostMapping
-    public ErrorResponse save(@Valid @RequestBody PostVO vO) {
+    public ErrorResponse save(@Valid @RequestBody PostCommentReplyVO vO) {
 
         // todo validate here
-        if( StringUtils.isNotNull(vO.getPostId()) )
+        if( StringUtils.isNotNull(vO.getReplyId()) )
         {
-            return new ErrorResponse(ErrorConstant.ERROR, "Invalid post Data");
+            return new ErrorResponse(ErrorConstant.ERROR, "Invalid Profile Data");
         }
         try
         {
@@ -51,15 +51,15 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ErrorResponse update(@Valid @NotNull @PathVariable("id") String id,
-                                @Valid @RequestBody PostVO vO) throws IOException {
+                                @Valid @RequestBody PostCommentReplyVO vO) throws IOException {
         // todo validate here
-        if( StringUtils.isNull( vO.getProfileId()) || StringUtils.isNull( id ))
+        if( StringUtils.isNull( vO.getReplyId()) || StringUtils.isNull( id ))
         {
-            return new ErrorResponse(ErrorConstant.ERROR, "Invalid post");
+            return new ErrorResponse(ErrorConstant.ERROR, "Invalid profile");
         }
-        else if ( !id.equalsIgnoreCase(vO.getPostId() ))
+        else if ( !id.equalsIgnoreCase(vO.getReplyId() ))
         {
-            return new ErrorResponse(ErrorConstant.ERROR, "post mismatched");
+            return new ErrorResponse(ErrorConstant.ERROR, "profile mismatched");
         }
         try
         {
@@ -73,8 +73,12 @@ public class PostController {
 
     @SneakyThrows
     @GetMapping("/{id}")
-    public PostDTO getById(@Valid @NotNull @PathVariable("id") String id) {
+    public PostCommentReplyDTO getById(@Valid @NotNull @PathVariable("id") String id) {
         return elasticSearchQuery.getDocumentById(id);
     }
 
+//    @GetMapping
+//    public Page<PostCommentReplyDTO> query(@Valid PostCommentReplyQueryVO vO) {
+//        return postCommentReplyService.query(vO);
+//    }
 }
