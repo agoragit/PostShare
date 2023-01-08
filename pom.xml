@@ -4,7 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<modules>
 		<module>UserManagement</module>
-		<module>CommonLib</module>
 		<module>ProfileManagement</module>
 	</modules>
 	<parent>
@@ -31,7 +30,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+		<groupId>ago.post</groupId>
+		<artifactId>CommonLibs</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>

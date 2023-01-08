@@ -1,8 +1,5 @@
 package error;
 
-import lombok.Data;
-
-@Data
 public class ErrorResponse implements java.io.Serializable  {
     private String message;
     private int error = -1;
