@@ -6,6 +6,7 @@
 		<module>UserManagement</module>
 		<module>ProfileManagement</module>
 		<module>PostingManagement</module>
+		<module>CommentManagement</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
