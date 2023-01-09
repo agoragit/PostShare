@@ -1,5 +1,6 @@
 package ago.app.comment.base.controller;
 
+import ago.app.comment.base.dto.PostCommentDTO;
 import ago.app.comment.base.vo.PostCommentUpdateVO;
 import ago.app.comment.base.vo.PostCommentVO;
 import ago.app.comment.es.ElasticSearchQuery;
@@ -72,7 +73,7 @@ public class PostCommentController {
 
     @SneakyThrows
     @GetMapping("/{id}")
-    public PostCommentVO getById(@Valid @NotNull @PathVariable("id") String id) {
+    public PostCommentDTO getById(@Valid @NotNull @PathVariable("id") String id) {
         return elasticSearchQuery.getDocumentById(id);
     }
 }

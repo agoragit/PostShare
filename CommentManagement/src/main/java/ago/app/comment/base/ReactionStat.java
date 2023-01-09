@@ -1,9 +1,9 @@
-package ago.app.post.base;
-
-import java.io.Serializable;
+package ago.app.comment.base;
 
 import lombok.Data;
 import org.springframework.data.annotation.Transient;
+
+import java.io.Serializable;
 
 @Data
 public class ReactionStat implements Serializable {

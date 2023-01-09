@@ -1,7 +1,9 @@
 package ago.app.comment.base.dto;
 
 
+import ago.app.comment.base.ReactionStat;
 import lombok.Data;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 
@@ -17,5 +19,8 @@ public class PostCommentDTO implements Serializable {
     private String comment;
 
     private String commentDate;
+
+    @Transient
+    private ReactionStat reactionStat;
 
 }

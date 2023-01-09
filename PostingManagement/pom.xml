@@ -11,11 +11,6 @@
     <packaging>war</packaging>
     <artifactId>PostingManagement</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>ago.app</groupId>
-            <artifactId>UserManagement</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <properties>
